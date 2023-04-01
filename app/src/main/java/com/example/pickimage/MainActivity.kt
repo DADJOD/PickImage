@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import com.google.android.material.snackbar.Snackbar
@@ -17,6 +18,8 @@ import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.pickimage.databinding.ActivityMainBinding
+import java.io.File
+import java.io.FileOutputStream
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,7 +56,39 @@ class MainActivity : AppCompatActivity() {
         if ( resultCode != RESULT_OK) return
         else {
             uri = data!!.data
+
+            mInfo!!.text = uri.toString()
+            mImage!!.setImageURI(uri)
             Log.d("happySDK", uri.toString())
+            copyImage()
         }
+    }
+
+    @SuppressLint("Recycle")
+    private fun copyImage() {
+        // internal
+//        val dir = filesDir
+//        val dir = cacheDir
+
+        // external
+//        val dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        Log.d("happySDK", dir!!.absolutePath)
+        dir.mkdirs()
+
+        val out = File(dir, "img ${System.currentTimeMillis()}.jpg")
+        val outputStream = FileOutputStream(out)
+        val inputStream = contentResolver.openInputStream(uri!!)
+
+        val buffer = byteArrayOf(1024.toByte())
+        var len : Int
+        while ((inputStream!!.read(buffer).also { len = it }) != -1) {
+            outputStream.write(buffer, 0, len)
+        }
+        inputStream!!.close()
+        outputStream.close()
+
+        Log.d("happySDK", out.absolutePath)
+        Log.d("happySDK", "len ${out.length()}")
     }
 }
