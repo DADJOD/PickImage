@@ -39,8 +39,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mImage = findViewById(R.id.mImage)
-        mInfo  = findViewById(R.id.info)
+        // don't do like that!
+//        mImage = findViewById(R.id.mImage)
+//        mInfo  = findViewById(R.id.info)
 
 //        mInfo?.run { text = "Info" }
 //        mImage?.run { setImageResource(android.R.drawable.btn_star_big_on) }
@@ -56,20 +57,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if ( requestCode != 14) return super.onActivityResult(requestCode, resultCode, data)
-        if ( resultCode != RESULT_OK) return
+        if (requestCode != 14) return super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode != RESULT_OK) return
         else {
             uri = data!!.data
 
             mInfo!!.text = uri.toString()
             mImage!!.setImageURI(uri)
+
             Log.d("happySDK", uri.toString())
 //            copyImage()
+            copyImageWrapper()
         }
     }
 
     fun copyImageWrapper() {
-        val result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val result = ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
         if (result == PackageManager.PERMISSION_GRANTED) {
             copyImage()
             return
@@ -102,6 +108,9 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("Recycle")
     private fun copyImage() {
+        // will be executed if we have rules on the READ/WRITE EXTERNAL STORAGE
+        mImage = findViewById(R.id.mImage)
+        mInfo  = findViewById(R.id.info)
         // internal
 //        val dir = filesDir    // dir - its place where picture will be save
 //        val dir = cacheDir
@@ -123,11 +132,11 @@ class MainActivity : AppCompatActivity() {
         val inputStream = contentResolver.openInputStream(uri!!)
 
         val buffer = byteArrayOf(1024.toByte())
-        var len : Int
+        var len: Int
         while ((inputStream!!.read(buffer).also { len = it }) != -1) {
             outputStream.write(buffer, 0, len)
         }
-        inputStream!!.close()
+        inputStream.close()
         outputStream.close()
 
         Log.d("happySDK", out.absolutePath)
