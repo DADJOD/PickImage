@@ -19,10 +19,19 @@ class PreferencesHelper(context: Context) {
     companion object {
         const val PREFS_NAME = "MyPrefs"
         const val FILENAME_KEY = "FILENAME_KEY"
+
+        private var instance: PreferencesHelper? = null
+
+        fun getInstance(context: Context): PreferencesHelper? {
+            if (instance == null) {
+                instance = PreferencesHelper(context)
+            }
+            return instance
+        }
     }
 }
 
-//class JavaSh(var context: Context) {
+//class PreferencesHelper(context: Context) {
 //    private val prefs: SharedPreferences
 //
 //    init {
@@ -37,31 +46,13 @@ class PreferencesHelper(context: Context) {
 //
 //    companion object {
 //        const val PREFS_NAME = "MyPrefs"
+//        private var instance: PreferencesHelper? = null
+//        fun getInstance(context: Context): PreferencesHelper? {
+//            if (instance == null) {
+//                instance = PreferencesHelper(context)
+//            }
+//            return instance
+//        }
 //        const val FILENAME_KEY = "FILENAME_KEY"
-//    }
-//}
-
-//class PreferencesHelper(context: Context) {
-//    private val prefs: SharedPreferences
-//
-//    init {
-//        prefs = context.getSharedPreferences(PREFS_NAME, 0)
-//    }
-//
-//    companion object {
-//        const val PREFS_NAME = "MyPrefs"
-//    }
-//}
-
-//public class JavaSh {
-//    private final SharedPreferences prefs;
-//    Context context;
-//
-//    public static final String PREFS_NAME = "MyPrefs";
-//
-//    public JavaSh(Context context) {
-//        this.context = context;
-//
-//        prefs = context.getSharedPreferences(PREFS_NAME, 0);
 //    }
 //}

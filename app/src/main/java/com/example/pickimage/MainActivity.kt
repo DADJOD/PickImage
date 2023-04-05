@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -141,5 +142,21 @@ class MainActivity : AppCompatActivity() {
 
         Log.d("happySDK", out.absolutePath)
         Log.d("happySDK", "len ${out.length()}")
+
+        PreferencesHelper.getInstance(this)!!.filenameKey = out.absolutePath
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val filename = PreferencesHelper.getInstance(this)!!.filenameKey
+
+        if (filename!!.isNotEmpty() && ContextCompat.checkSelfPermission(
+                this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        == PackageManager.PERMISSION_GRANTED) {
+            val bitmap = BitmapFactory.decodeFile(filename)
+            mImage!!.setImageBitmap(bitmap)
+            mInfo!!.text = filename
+        }
     }
 }
