@@ -1,7 +1,6 @@
 package com.example.pickimage
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -10,22 +9,16 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.pickimage.databinding.ActivityMainBinding
 import java.io.File
 import java.io.FileOutputStream
 
+@Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
     private var mInfo: TextView? = null
@@ -41,12 +34,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         mImage = findViewById(R.id.mImage)
-        mInfo  = findViewById(R.id.info)
+        mInfo = findViewById(R.id.info)
 
 //        mInfo?.run { text = "Info" }
 //        mImage?.run { setImageResource(android.R.drawable.btn_star_big_on) }
 
-        binding.fab.setOnClickListener { view ->
+        binding.fab.setOnClickListener {
             pickImage()
         }
     }
@@ -56,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, 14)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode != 14) return super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != RESULT_OK) return
@@ -72,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun copyImageWrapper() {
+    private fun copyImageWrapper() {
         val result = ContextCompat.checkSelfPermission(
             this,
             android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -119,7 +113,7 @@ class MainActivity : AppCompatActivity() {
         // external
 //        val dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
-        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+        if (Environment.MEDIA_MOUNTED != Environment.getExternalStorageState()) {
             return
         }
 
@@ -152,8 +146,10 @@ class MainActivity : AppCompatActivity() {
         val filename = PreferencesHelper.getInstance(this)!!.filenameKey
 
         if (filename!!.isNotEmpty() && ContextCompat.checkSelfPermission(
-                this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        == PackageManager.PERMISSION_GRANTED) {
+                this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+            )
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             val bitmap = BitmapFactory.decodeFile(filename)
             mImage!!.setImageBitmap(bitmap)
             mInfo!!.text = filename
