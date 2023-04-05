@@ -1,7 +1,9 @@
 package com.example.pickimage
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -17,6 +19,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.pickimage.databinding.ActivityMainBinding
 import java.io.File
 import java.io.FileOutputStream
@@ -60,19 +64,57 @@ class MainActivity : AppCompatActivity() {
             mInfo!!.text = uri.toString()
             mImage!!.setImageURI(uri)
             Log.d("happySDK", uri.toString())
+//            copyImage()
+        }
+    }
+
+    fun copyImageWrapper() {
+        val result = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if (result == PackageManager.PERMISSION_GRANTED) {
             copyImage()
+            return
+        }
+
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            42
+        )
+    }
+
+    @SuppressLint("SetTextI18n")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == 42) {
+            val result = grantResults[0]
+            if (result == PackageManager.PERMISSION_GRANTED) {
+                copyImage()
+            } else {
+                mInfo!!.text = "permission denied"
+            }
+        } else {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
     }
 
     @SuppressLint("Recycle")
     private fun copyImage() {
         // internal
-//        val dir = filesDir
+//        val dir = filesDir    // dir - its place where picture will be save
 //        val dir = cacheDir
 
         // external
 //        val dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+
+        if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            return
+        }
+
         val dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        Log.d("happySDK", "free ${dir.freeSpace}")
         Log.d("happySDK", dir!!.absolutePath)
         dir.mkdirs()
 
