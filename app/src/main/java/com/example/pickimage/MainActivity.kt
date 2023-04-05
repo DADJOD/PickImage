@@ -39,9 +39,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // don't do like that!
-//        mImage = findViewById(R.id.mImage)
-//        mInfo  = findViewById(R.id.info)
+        mImage = findViewById(R.id.mImage)
+        mInfo  = findViewById(R.id.info)
 
 //        mInfo?.run { text = "Info" }
 //        mImage?.run { setImageResource(android.R.drawable.btn_star_big_on) }
@@ -62,8 +61,9 @@ class MainActivity : AppCompatActivity() {
         else {
             uri = data!!.data
 
-            mInfo!!.text = uri.toString()
-            mImage!!.setImageURI(uri)
+            // don't do like that!
+//            mInfo!!.text = uri.toString()
+//            mImage!!.setImageURI(uri)
 
             Log.d("happySDK", uri.toString())
 //            copyImage()
@@ -109,8 +109,8 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("Recycle")
     private fun copyImage() {
         // will be executed if we have rules on the READ/WRITE EXTERNAL STORAGE
-        mImage = findViewById(R.id.mImage)
-        mInfo  = findViewById(R.id.info)
+        mInfo!!.text = uri.toString()
+        mImage!!.setImageURI(uri)
         // internal
 //        val dir = filesDir    // dir - its place where picture will be save
 //        val dir = cacheDir
